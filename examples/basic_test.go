@@ -3,9 +3,9 @@ package head_test
 import (
 	"fmt"
 
-	command "github.com/gloo-foo/cmd-head"
-
 	"github.com/gloo-foo/testable"
+
+	command "github.com/gloo-foo/cmd-head"
 )
 
 func ExampleHead_basic() {

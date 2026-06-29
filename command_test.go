@@ -8,11 +8,11 @@ import (
 	"sync/atomic"
 	"testing"
 
-	command "github.com/gloo-foo/cmd-head"
 	gloo "github.com/gloo-foo/framework"
-
 	"github.com/gloo-foo/testable"
 	"github.com/gloo-foo/testable/assertion"
+
+	command "github.com/gloo-foo/cmd-head"
 )
 
 // errUpstream is a sentinel emitted by a deliberately failing source so byte
@@ -123,15 +123,15 @@ func TestHead_ExactlyN(t *testing.T) {
 func TestHead_TableDriven(t *testing.T) {
 	tests := []struct {
 		name     string
-		n        command.HeadLines
 		input    string
 		expected []string
+		n        command.HeadLines
 	}{
-		{"three from five", 3, "a\nb\nc\nd\ne\n", []string{"a", "b", "c"}},
-		{"one line", 1, "first\nsecond\nthird\n", []string{"first"}},
-		{"all lines", 5, "a\nb\n", []string{"a", "b"}},
-		{"with empty lines", 3, "a\n\nb\nc\n", []string{"a", "", "b"}},
-		{"unicode", 2, "hello\nworld\nend\n", []string{"hello", "world"}},
+		{"three from five", "a\nb\nc\nd\ne\n", []string{"a", "b", "c"}, 3},
+		{"one line", "first\nsecond\nthird\n", []string{"first"}, 1},
+		{"all lines", "a\nb\n", []string{"a", "b"}, 5},
+		{"with empty lines", "a\n\nb\nc\n", []string{"a", "", "b"}, 3},
+		{"unicode", "hello\nworld\nend\n", []string{"hello", "world"}, 2},
 	}
 
 	for _, tt := range tests {
@@ -201,7 +201,9 @@ func TestHead_Bytes_PropagatesUpstreamError(t *testing.T) {
 func TestHead_ManyLines(t *testing.T) {
 	var b strings.Builder
 	for i := 1; i <= 1000; i++ {
-		fmt.Fprintf(&b, "line %d\n", i)
+		// strings.Builder.Write never returns an error (documented contract); the
+		// blank assignment acknowledges the error return the linter sees.
+		_, _ = fmt.Fprintf(&b, "line %d\n", i)
 	}
 	lines, err := testable.TestLines(command.Head(command.HeadLines(10)), b.String())
 	assertion.NoError(t, err)

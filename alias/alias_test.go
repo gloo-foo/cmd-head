@@ -4,8 +4,9 @@ import (
 	"slices"
 	"testing"
 
-	head "github.com/gloo-foo/cmd-head/alias"
 	"github.com/gloo-foo/testable"
+
+	head "github.com/gloo-foo/cmd-head/alias"
 )
 
 // The alias package re-exports the constructor and flag types under unprefixed
